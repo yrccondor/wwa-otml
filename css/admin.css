@@ -1,0 +1,13 @@
+#wwa-otml-mail-template-editor {
+    overflow: hidden;
+}
+.wwa-otml-number-input {
+    width: 60px;
+}
+.wwa-otml-summary {
+    cursor: pointer;
+}
+.wwa-otml-details {
+    margin-bottom: 0;
+    margin-top: 4px;
+}
