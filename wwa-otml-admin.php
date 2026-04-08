@@ -83,7 +83,7 @@ function admin_page_part() {
 <tr>
     <th scope="row"><label for="magic_link_expire"><?php esc_html_e('Login link expires in', 'wwa-otml');?></label></th>
     <td>
-        <input required name="magic_link_expire" type="number" id="magic_link_expire" value="<?php echo esc_attr($wwaotml_v_mle); ?>" class="regular-text wwa-otml-number-input" min="1" max="30"> <?php esc_html_x('minute(s)', 'Login link expires in...', 'wwa-otml');?>
+        <input required name="magic_link_expire" type="number" id="magic_link_expire" value="<?php echo esc_attr($wwaotml_v_mle); ?>" class="regular-text wwa-otml-number-input" min="1" max="30"> <?php echo esc_html_x('minute(s)', 'Login link expires in...', 'wwa-otml');?>
         <p class="description"><?php esc_html_e('Duration of validity of one-time login links. Must be an integer between 1 and 30.', 'wwa-otml');?></p>
     </td>
 </tr>
