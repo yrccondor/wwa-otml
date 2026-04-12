@@ -1,6 +1,10 @@
 <?php
 namespace WPWebAuthn\OTML;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 $wwaotml_allowed_tags = array(
     'a' => array(
         'href' => true,

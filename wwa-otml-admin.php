@@ -76,7 +76,7 @@ function admin_page_part() {
         <fieldset>
             <label><input type="radio" name="magic_link" value="true" <?php if($wwaotml_v_ml === 'true'){?>checked="checked"<?php }?>> <?php esc_html_e('Enable', 'wp-webauthn'); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?></label><br>
             <label><input type="radio" name="magic_link" value="false" <?php if($wwaotml_v_ml === 'false'){?>checked="checked"<?php }?>> <?php esc_html_e('Disable', 'wp-webauthn'); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?></label><br>
-            <p class="description"><?php _e('Allow users to request one-time login links if they lose their authenticator. The link will be sent to user\'s email address on request.<br><strong>Using one-time login links, users can login directly without WebAuthn authentication.</strong>', 'wwa-otml');?></p>
+            <p class="description"><?php echo wp_kses(__('Allow users to request one-time login links if they lose their authenticator. The link will be sent to user\'s email address on request.<br><strong>Using one-time login links, users can login directly without WebAuthn authentication.</strong>', 'wwa-otml'), array('br' => array(), 'strong' => array()));?></p>
         </fieldset>
     </td>
 </tr>
@@ -116,7 +116,7 @@ function admin_page_part() {
         <details>
             <summary class="wwa-otml-summary"><?php esc_html_e('Placeholder list', 'wwa-otml');?></summary>
             <ul class="wwa-otml-details">
-                <?php _e('<li><code title="Click to select">{% username %}</code> will be replaced with the user\'s name</li><li><code title="Click to select">{% useremail %}</code> will be replaced with the user\'s email address</li><li><code title="Click to select">{% loginurl %}</code> will be replaced with the one-time login link URL</li><li><code title="Click to select">{% expiretime %}</code> will be replaced with the duration of validity of one-time login links (in minute)</li><li><code title="Click to select">{% sitename %}</code> will be replaced with site name</li><li><code title="Click to select">{% homeurl %}</code> will be replaced with site home URL</li><li><code title="Click to select">{% generatedtime %}</code> will be replaced with the date and time the link is generated</li><li><code title="Click to select">{% generatedby %}</code> will be replaced with "registration" or the name of the browser that triggered the link generation</li>', 'wwa-otml');?>
+                <?php echo wp_kses(__('<li><code title="Click to select">{% username %}</code> will be replaced with the user\'s name</li><li><code title="Click to select">{% useremail %}</code> will be replaced with the user\'s email address</li><li><code title="Click to select">{% loginurl %}</code> will be replaced with the one-time login link URL</li><li><code title="Click to select">{% expiretime %}</code> will be replaced with the duration of validity of one-time login links (in minute)</li><li><code title="Click to select">{% sitename %}</code> will be replaced with site name</li><li><code title="Click to select">{% homeurl %}</code> will be replaced with site home URL</li><li><code title="Click to select">{% generatedtime %}</code> will be replaced with the date and time the link is generated</li><li><code title="Click to select">{% generatedby %}</code> will be replaced with "registration" or the name of the browser that triggered the link generation</li>', 'wwa-otml'), array('li' => array(), 'code' => array('title' => array())));?>
             </ul>
         </details>
     </td>

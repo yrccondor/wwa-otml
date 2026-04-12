@@ -17,7 +17,7 @@ With this plugin, when using WP-WebAuthn, users can create a one-time login link
 
 == Installation ==
 
-Before installing this plugin, please make sure you have [WP-WebAuthn](https://wordpress.org/plugins/wp-webauthn/) version 1.3.5+ installed and activated.
+Before installing this plugin, please make sure you have [WP-WebAuthn](https://wordpress.org/plugins/wp-webauthn/) version 1.4.0+ installed and activated.
 
 Just download the plugin from releases and install it, then you are good to go.
 
