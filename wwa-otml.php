@@ -1,13 +1,13 @@
 <?php
 /*
-Plugin Name: WP-WebAuthn One Time Login Link Provider
+Plugin Name: WWA One Time Login Link Provider
 Plugin URI: https://flyhigher.top
 Description: Provide one-time login link capability as a backup for WP-WebAuthn.
 Version: 1.0.0
 Author: Axton
 Author URI: https://axton.cc
 License: GPLv3
-Text Domain: wwa-otml
+Text Domain: wwa-one-time-login-link-provider
 Domain Path: /languages
 Network: true
 Requires Plugins: wp-webauthn
@@ -121,12 +121,13 @@ add_action('init', __NAMESPACE__.'\load_textdomain');
 
 // Add CSS and JS in login page
 function login_js() {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Login page enqueue, nonce not applicable.
     $redirect_to = isset($_GET['redirect_to']) ? sanitize_text_field(wp_unslash($_GET['redirect_to'])) : '';
     wp_enqueue_script('wwaotml_login', plugins_url('js/login.js', __FILE__), array(), get_option('wwaotml_version')['version'], true);
     wp_localize_script('wwaotml_login', 'wwaotml_php_vars', array(
         'request_url' => add_query_arg('action', 'wwa_otl', wp_login_url($redirect_to)),
         'separator' => apply_filters('login_link_separator', ' | '),
-        'one_time' => __('One Time Login', 'wwa-otml'),
+        'one_time' => __('One Time Login', 'wwa-one-time-login-link-provider'),
     ));
 }
 add_action('login_enqueue_scripts', __NAMESPACE__.'\login_js', 999);
@@ -251,7 +252,7 @@ function get_current_browser() {
     } elseif ($browser !== '') {
         $name = $browser;
     } else {
-        $name = __('Unknown Browser', 'wwa-otml');
+        $name = __('Unknown Browser', 'wwa-one-time-login-link-provider');
     }
 
     if (!is_user_logged_in()) {
@@ -332,10 +333,10 @@ function new_user_notification_email($wp_new_user_notification_email, $user, $bl
         $user_login = stripslashes($user->user_login);
         $user_email = stripslashes($user->user_email);
 
-        $mail_content = build_otl_mail_content($user_email, $user_login, create_onetime_login_url('register', $user_login), __('registration', 'wwa-otml'));
+        $mail_content = build_otl_mail_content($user_email, $user_login, create_onetime_login_url('register', $user_login), __('registration', 'wwa-one-time-login-link-provider'));
 
         /* translators: %s: blog name */
-        $wp_new_user_notification_email['subject'] = sprintf(__('[%s] Please login following the one time link', 'wwa-otml'), $blogname);
+        $wp_new_user_notification_email['subject'] = sprintf(__('[%s] Please login following the one time link', 'wwa-one-time-login-link-provider'), $blogname);
         $wp_new_user_notification_email['headers'] = array('Content-Type: text/html; charset=UTF-8');
         $wp_new_user_notification_email['message'] = $mail_content;
     }
@@ -350,8 +351,15 @@ if (w_get_option_wwa('after_user_registration') === 'mail') {
 function add_otl_form() {
     $http_post = ('POST' === (isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : false));
     $errors = new \WP_Error();
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Login page GET parameter, nonce not applicable.
     $redirect_to = isset($_GET['redirect_to']) ? sanitize_url(wp_unslash($_GET['redirect_to'])) : '';
     if ($http_post) {
+        if (!isset($_POST['_wwa_otl_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wwa_otl_nonce'])), 'wwa_otl_request')) {
+            wp_safe_redirect(add_query_arg(array(
+                'action' => 'wwa_otl',
+            ), wp_login_url($redirect_to)));
+            exit;
+        }
         $error = false;
 
         if (isset($_POST['user_login']) && trim(sanitize_text_field(wp_unslash($_POST['user_login']))) !== '') {
@@ -364,10 +372,10 @@ function add_otl_form() {
                     $mail_content = build_otl_mail_content($user_email, $user_login, create_onetime_login_url('login', $user_login, $redirect_to), get_current_browser());
 
                     /* translators: %s: blog name */
-                    if (!wp_mail($user->user_email, wp_specialchars_decode(sprintf(__('[%s] Please login following the one time link', 'wwa-otml'), get_bloginfo('name'))), $mail_content, array('Content-Type: text/html; charset=UTF-8'))) {
+                    if (!wp_mail($user->user_email, wp_specialchars_decode(sprintf(__('[%s] Please login following the one time link', 'wwa-one-time-login-link-provider'), get_bloginfo('name'))), $mail_content, array('Content-Type: text/html; charset=UTF-8'))) {
                         $errors->add(
                             'opl_email_failure',
-                            __('<strong>Error:</strong> The email could not be sent. Your site may not be correctly configured to send emails.', 'wwa-otml')
+                            __('<strong>Error:</strong> The email could not be sent. Your site may not be correctly configured to send emails.', 'wwa-one-time-login-link-provider')
                         );
                         $error = true;
                     }
@@ -380,22 +388,22 @@ function add_otl_form() {
             ), wp_login_url($redirect_to)));
         }
 
-        login_header(__('Request One Time Login Link', 'wwa-otml'), '', $errors);
+        login_header(__('Request One Time Login Link', 'wwa-one-time-login-link-provider'), '', $errors);
 
         if (!$error) {
         ?>
             <form name="lostpasswordform" id="lostpasswordform" class="wwa-otml-form">
                 <p>
-                    <?php esc_html_e('An email message has been sent to the corresponding email address. Check your inbox and follow the instructions.', 'wwa-otml'); ?>
+                    <?php esc_html_e('An email message has been sent to the corresponding email address. Check your inbox and follow the instructions.', 'wwa-one-time-login-link-provider'); ?>
                 </p>
             </form>
         <?php } else { ?>
             <form name="lostpasswordform" id="lostpasswordform" class="wwa-otml-form">
                 <p>
-                    <?php esc_html_e('Email not sent.', 'wwa-otml'); ?>
+                    <?php esc_html_e('Email not sent.', 'wwa-one-time-login-link-provider'); ?>
                 </p>
                 <p class="submit">
-                    <a id="wp-submit" class="button button-primary button-large" href="<?php echo esc_url(add_query_arg(array('action' => 'wwa_otl'), wp_login_url($redirect_to))); ?>"><?php esc_html_e('Go Back', 'wwa-otml'); ?></a>
+                    <a id="wp-submit" class="button button-primary button-large" href="<?php echo esc_url(add_query_arg(array('action' => 'wwa_otl'), wp_login_url($redirect_to))); ?>"><?php esc_html_e('Go Back', 'wwa-one-time-login-link-provider'); ?></a>
                 </p>
             </form>
         <?php } ?>
@@ -406,11 +414,11 @@ function add_otl_form() {
             if (get_option('users_can_register')) {
                 $registration_url = sprintf('<a href="%s">%s</a>', esc_url(wp_registration_url()), __('Register'));
                 echo esc_html(apply_filters('login_link_separator', ' | '));
-                echo apply_filters('register', $registration_url);
+                echo wp_kses_post(apply_filters('register', $registration_url));
             }
             echo esc_html(apply_filters('login_link_separator', ' | '));
             $html_link = sprintf('<a href="%s">%s</a>', esc_url(wp_lostpassword_url($redirect_to)), __('Lost your password?'));
-            echo apply_filters('lost_password_html_link', $html_link);
+            echo wp_kses_post(apply_filters('lost_password_html_link', $html_link));
             ?>
         </p>
         <?php
@@ -418,14 +426,16 @@ function add_otl_form() {
         exit;
     }
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Simple boolean flag from redirect, no sensitive data.
     if (isset($_GET['invalid']) && $_GET['invalid'] === 'true') {
-        $errors->add('invalidkey', __('<strong>Error:</strong> Your one time login link appears to be invalid. Please request a new link below.', 'wwa-otml'));
+        $errors->add('invalidkey', __('<strong>Error:</strong> Your one time login link appears to be invalid. Please request a new link below.', 'wwa-one-time-login-link-provider'));
     }
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Simple boolean flag from redirect, no sensitive data.
     if (isset($_GET['empty']) && $_GET['empty'] === 'true') {
         $errors->add('empty_username', __('<strong>Error:</strong> Please enter a username or email address.'));
     }
 
-    login_header(__('Request One Time Login Link', 'wwa-otml'), '<p class="message">'.__('Please enter your username or email address. You will receive an email message with a one time login link.', 'wwa-otml').'</p>', $errors);
+    login_header(__('Request One Time Login Link', 'wwa-one-time-login-link-provider'), '<p class="message">'.__('Please enter your username or email address. You will receive an email message with a one time login link.', 'wwa-one-time-login-link-provider').'</p>', $errors);
     ?>
 
     <?php if (w_get_option('magic_link') === 'true') { ?>
@@ -434,14 +444,15 @@ function add_otl_form() {
                 <label for="user_login"><?php esc_html_e('Username or Email Address'); ?></label>
                 <input type="text" name="user_login" id="user_login" class="input" value="" size="20" autocapitalize="off" autocomplete="username" required="required">
             </p>
+            <?php wp_nonce_field('wwa_otl_request', '_wwa_otl_nonce'); ?>
             <p class="submit">
-                <input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e('Request Link', 'wwa-otml'); ?>">
+                <input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e('Request Link', 'wwa-one-time-login-link-provider'); ?>">
             </p>
         </form>
     <?php } else { ?>
         <form name="lostpasswordform" id="lostpasswordform" class="wwa-otml-form">
             <p>
-                <?php esc_html_e('You cannot create one time login links now. Please contact the site administrator.', 'wwa-otml'); ?>
+                <?php esc_html_e('You cannot create one time login links now. Please contact the site administrator.', 'wwa-one-time-login-link-provider'); ?>
             </p>
         </form>
     <?php } ?>
@@ -452,11 +463,11 @@ function add_otl_form() {
         if (get_option('users_can_register')) {
             $registration_url = sprintf('<a href="%s">%s</a>', esc_url(wp_registration_url()), __('Register'));
             echo esc_html(apply_filters('login_link_separator', ' | '));
-            echo apply_filters('register', $registration_url);
+            echo wp_kses_post(apply_filters('register', $registration_url));
         }
         echo esc_html(apply_filters('login_link_separator', ' | '));
         $html_link = sprintf('<a href="%s">%s</a>', esc_url(wp_lostpassword_url($redirect_to)), __('Lost your password?'));
-        echo apply_filters('lost_password_html_link', $html_link);
+        echo wp_kses_post(apply_filters('lost_password_html_link', $html_link));
         ?>
     </p>
     <?php

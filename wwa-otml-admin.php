@@ -71,27 +71,27 @@ function admin_page_part() {
     wp_enqueue_style('wwaotml_admin', plugins_url('css/admin.css', __FILE__), array(), get_option('wwaotml_version')['version']);
 ?>
 <tr>
-    <th scope="row"><label for="magic_link"><?php esc_html_e('Allow user login by login link via email', 'wwa-otml');?></label></th>
+    <th scope="row"><label for="magic_link"><?php esc_html_e('Allow user login by login link via email', 'wwa-one-time-login-link-provider');?></label></th>
     <td>
         <fieldset>
             <label><input type="radio" name="magic_link" value="true" <?php if($wwaotml_v_ml === 'true'){?>checked="checked"<?php }?>> <?php esc_html_e('Enable', 'wp-webauthn'); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?></label><br>
             <label><input type="radio" name="magic_link" value="false" <?php if($wwaotml_v_ml === 'false'){?>checked="checked"<?php }?>> <?php esc_html_e('Disable', 'wp-webauthn'); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?></label><br>
-            <p class="description"><?php echo wp_kses(__('Allow users to request one-time login links if they lose their authenticator. The link will be sent to user\'s email address on request.<br><strong>Using one-time login links, users can login directly without WebAuthn authentication.</strong>', 'wwa-otml'), array('br' => array(), 'strong' => array()));?></p>
+            <p class="description"><?php echo wp_kses(__('Allow users to request one-time login links if they lose their authenticator. The link will be sent to user\'s email address on request.<br><strong>Using one-time login links, users can login directly without WebAuthn authentication.</strong>', 'wwa-one-time-login-link-provider'), array('br' => array(), 'strong' => array()));?></p>
         </fieldset>
     </td>
 </tr>
 <tr>
-    <th scope="row"><label for="magic_link_expire"><?php esc_html_e('Login link expires in', 'wwa-otml');?></label></th>
+    <th scope="row"><label for="magic_link_expire"><?php esc_html_e('Login link expires in', 'wwa-one-time-login-link-provider');?></label></th>
     <td>
-        <input required name="magic_link_expire" type="number" id="magic_link_expire" value="<?php echo esc_attr($wwaotml_v_mle); ?>" class="regular-text wwa-otml-number-input" min="1" max="30"> <?php echo esc_html_x('minute(s)', 'Login link expires in...', 'wwa-otml');?>
-        <p class="description"><?php esc_html_e('Duration of validity of one-time login links. Must be an integer between 1 and 30.', 'wwa-otml');?></p>
+        <input required name="magic_link_expire" type="number" id="magic_link_expire" value="<?php echo esc_attr($wwaotml_v_mle); ?>" class="regular-text wwa-otml-number-input" min="1" max="30"> <?php echo esc_html_x('minute(s)', 'Login link expires in...', 'wwa-one-time-login-link-provider');?>
+        <p class="description"><?php esc_html_e('Duration of validity of one-time login links. Must be an integer between 1 and 30.', 'wwa-one-time-login-link-provider');?></p>
     </td>
 </tr>
 <tr>
-    <th scope="row"><label for="mail_template"><?php esc_html_e('Login link email template', 'wwa-otml');?></label></th>
+    <th scope="row"><label for="mail_template"><?php esc_html_e('Login link email template', 'wwa-one-time-login-link-provider');?></label></th>
     <td>
-        <button class="button wwa-otml-open-editor"><?php esc_html_e('Open editor', 'wwa-otml');?></button>
-        <button class="button wwa-otml-close-editor" style="display:none"><?php esc_html_e('Close editor', 'wwa-otml');?></button>
+        <button class="button wwa-otml-open-editor"><?php esc_html_e('Open editor', 'wwa-one-time-login-link-provider');?></button>
+        <button class="button wwa-otml-close-editor" style="display:none"><?php esc_html_e('Close editor', 'wwa-one-time-login-link-provider');?></button>
         <div id="wwa-otml-mail-template-editor" style="height:0">
             <?php
             wp_editor(htmlspecialchars_decode($wwaotml_v_mt), 'wwa-otml-mail-template', array(
@@ -112,11 +112,11 @@ function admin_page_part() {
             ));
             ?>
         </div>
-        <p class="description"><?php esc_html_e('Email template used when sending one-time login links. Placeholders are available for dynamic fields.', 'wwa-otml');?></p>
+        <p class="description"><?php esc_html_e('Email template used when sending one-time login links. Placeholders are available for dynamic fields.', 'wwa-one-time-login-link-provider');?></p>
         <details>
-            <summary class="wwa-otml-summary"><?php esc_html_e('Placeholder list', 'wwa-otml');?></summary>
+            <summary class="wwa-otml-summary"><?php esc_html_e('Placeholder list', 'wwa-one-time-login-link-provider');?></summary>
             <ul class="wwa-otml-details">
-                <?php echo wp_kses(__('<li><code title="Click to select">{% username %}</code> will be replaced with the user\'s name</li><li><code title="Click to select">{% useremail %}</code> will be replaced with the user\'s email address</li><li><code title="Click to select">{% loginurl %}</code> will be replaced with the one-time login link URL</li><li><code title="Click to select">{% expiretime %}</code> will be replaced with the duration of validity of one-time login links (in minute)</li><li><code title="Click to select">{% sitename %}</code> will be replaced with site name</li><li><code title="Click to select">{% homeurl %}</code> will be replaced with site home URL</li><li><code title="Click to select">{% generatedtime %}</code> will be replaced with the date and time the link is generated</li><li><code title="Click to select">{% generatedby %}</code> will be replaced with "registration" or the name of the browser that triggered the link generation</li>', 'wwa-otml'), array('li' => array(), 'code' => array('title' => array())));?>
+                <?php echo wp_kses(__('<li><code title="Click to select">{% username %}</code> will be replaced with the user\'s name</li><li><code title="Click to select">{% useremail %}</code> will be replaced with the user\'s email address</li><li><code title="Click to select">{% loginurl %}</code> will be replaced with the one-time login link URL</li><li><code title="Click to select">{% expiretime %}</code> will be replaced with the duration of validity of one-time login links (in minute)</li><li><code title="Click to select">{% sitename %}</code> will be replaced with site name</li><li><code title="Click to select">{% homeurl %}</code> will be replaced with site home URL</li><li><code title="Click to select">{% generatedtime %}</code> will be replaced with the date and time the link is generated</li><li><code title="Click to select">{% generatedby %}</code> will be replaced with "registration" or the name of the browser that triggered the link generation</li>', 'wwa-one-time-login-link-provider'), array('li' => array(), 'code' => array('title' => array())));?>
             </ul>
         </details>
     </td>

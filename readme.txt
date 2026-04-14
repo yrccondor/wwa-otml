@@ -1,4 +1,4 @@
-=== WP-WebAuthn One Time Login Link Provider ===
+=== WWA One Time Login Link Provider ===
 Contributors: axton
 Donate link: https://flyhigher.top/about
 Tags: webauthn, email, login, security
@@ -21,10 +21,8 @@ Before installing this plugin, please make sure you have [WP-WebAuthn](https://w
 
 Just download the plugin from releases and install it, then you are good to go.
 
-You can also install [WP-WebAuthn One Time Login Link Provider](https://wordpress.org/plugins/wp-webauthn/) from WordPress plugin directory.
-
 == Screenshots ==
 
-1. The login page
+1. The settings page
 
 == Changelog ==

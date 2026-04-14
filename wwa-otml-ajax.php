@@ -7,15 +7,19 @@ function ajax_opl_login(){
     $res_id = generate_random_string(5);
     nocache_headers();
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- One-time login link from email; token-based auth, nonce not applicable.
     $redirect_to = isset($_GET['redirect_to']) ? sanitize_text_field(wp_unslash($_GET['redirect_to'])) : '';
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- One-time login link from email; token-based auth, nonce not applicable.
     if (!isset($_GET['wwa_user']) || !isset($_GET['wwa_token'])) {
         wp_safe_redirect(wp_login_url($redirect_to, true));
         exit;
     }
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- One-time login link from email; token-based auth, nonce not applicable.
     $wwa_user = sanitize_text_field(wp_unslash($_GET['wwa_user']));
-    $wwa_token = wp_unslash($_GET['wwa_token']);
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- One-time login link from email; token-based auth, nonce not applicable.
+    $wwa_token = sanitize_text_field(wp_unslash($_GET['wwa_token']));
 
     $get_user = get_user($wwa_user);
     if ($get_user === false) {

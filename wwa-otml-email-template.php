@@ -6,5 +6,5 @@ $wwaotml_default_email_template = __('<p>Hi {% username %},</p>
 <p>If the link above is not working, copy and paste this link into your browser: {% loginurl %}</p>
 <p>This link was requested at <strong>{% generatedtime %}</strong> by <strong>{% generatedby %}</strong>.</p>
 <p>If you have not requested a login link, please ignore this email or contact the site administrator.</p>
-<p><a href="{% homeurl %}">{% sitename %}</a></p>', 'wwa-otml');
+<p><a href="{% homeurl %}">{% sitename %}</a></p>', 'wwa-one-time-login-link-provider');
 ?>
